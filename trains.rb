@@ -42,7 +42,7 @@ class Train
   end
 
   def move_to_next_station
-    @route.next_station(@current_station).get_train(self)
+    @route.next_station(@current_station).park_train(self)
   end
   private :speed=, :carriage=
 end
@@ -56,15 +56,13 @@ class RailwayStation
     @trains_list = []
   end
 
-  def get_train(train)
+  def park_train(train)
     @trains_list << train if train.is_a? Train
     train.current_station = self
   end
 
   def show_train_types
-    train_type_list = []
-    @trains_list.each { |train| train_type_list << train.type }
-    train_type_list.tally
+    @trains_list.map(&:type).tally
   end
 end
 
@@ -77,9 +75,7 @@ class Route
   end
 
   def show_stations
-    station_list = []
-    @route_map.each { |station| station_list << station.name }
-    station_list
+    @route_map.map(&:name)
   end
 
   def add_station(station)
