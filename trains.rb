@@ -1,16 +1,16 @@
 # Train class
 class Train
-  attr_accessor :speed, :carriage, :current_station, :route
-  attr_reader :type
+  attr_accessor :speed, :carriage, :current_station
+  attr_reader :type, :route
 
   def initialize(type, speed = 0, carriage = 0)
     @type = type.downcase
-    self.speed = speed
-    self.carriage = carriage
+    @speed = speed
+    @carriage = carriage
   end
 
   def stop
-    self.speed = 0
+    @speed = 0
   end
 
   def stopped?
@@ -18,31 +18,31 @@ class Train
   end
 
   def increase_speed(amount)
-    self.speed += amount
+    @speed += amount
   end
 
   def attach_carriage
-    self.carriage += 1 if stopped?
+    @carriage += 1 if stopped?
   end
 
   def detach_carriage
-    self.carriage -= 1 if stopped?
+    @carriage -= 1 if stopped?
   end
 
-  def get_route(route)
+  def route=(route)
     @route = route if route.is_a? Route
   end
 
   def next_station
-    @route.route_map[@route.route_map.index(@current_station) + 1].name
+    @route.next_station(@current_station).name
   end
 
   def previous_station
-    @route.route_map[@route.route_map.index(@current_station) - 1].name
+    @route.previous_station(@current_station).name
   end
 
   def move_to_next_station
-    @route.route_map[@route.route_map.index(@current_station) + 1].get_train(self)
+    @route.next_station(@current_station).get_train(self)
   end
   private :speed=, :carriage=
 end
@@ -86,7 +86,15 @@ class Route
     @route_map << station if station.is_a? RailwayStation
   end
 
-  def delete_station(station_number)
-    @route_map.delete_at(station_number)
+  def delete_station(station_index)
+    @route_map.delete_at(station_index)
+  end
+
+  def next_station(station)
+    @route_map[@route_map.index(station) + 1]
+  end
+
+  def previous_station(station)
+    @route_map[@route_map.index(station) - 1]
   end
 end
