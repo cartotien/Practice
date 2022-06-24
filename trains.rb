@@ -1,6 +1,7 @@
 # Train class
 class Train
-  attr_accessor :speed, :carriage, :current_station
+  attr_accessor :speed, :carriage
+  attr_writer :current_station
   attr_reader :type, :route
 
   def initialize(type, speed = 0, carriage = 0)
@@ -31,6 +32,10 @@ class Train
 
   def route=(route)
     @route = route if route.is_a? Route
+  end
+
+  def current_station
+    @current_station.name
   end
 
   def next_station
